@@ -1,0 +1,16 @@
+# Yosys script: extract pin/net info from netlist
+# Usage: PATH=/home/ding/local/usr/bin:$PATH yosys dump_pin_order.ys
+
+read_verilog /mnt/f/reasonix/3d_partitioned/gcd/gcd_heterosta3d_renamed.v
+hierarchy -check -top gcd
+flatten
+
+# Output all wires (nets) and their connections
+# Use show to understand structure, or stat for counts
+stat
+
+# Write out the detailed netlist for parsing
+write_verilog -noattr -noexpr /mnt/f/reasonix/3d_partitioned/gcd/gcd_flat_dump.v
+
+# Also dump the RTLIL for full parsing
+write_rtlil /mnt/f/reasonix/3d_partitioned/gcd/gcd_dump.rtlil

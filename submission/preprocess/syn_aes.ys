@@ -1,0 +1,19 @@
+# AES synth → ASAP7 RVT TT
+# Usage: PATH=/home/ding/local/usr/bin:$PATH TMPDIR=/mnt/f/reasonix yosys syn_aes.ys
+
+read_liberty -lib /mnt/f/reasonix/OpenROAD-flow-scripts/flow/platforms/asap7/lib/asap7sc7p5t_SEQ_RVT_TT_nldm_201020.lib
+read_verilog /mnt/f/reasonix/OpenROAD-flow-scripts/flow/designs/src/aes/timescale.v
+read_verilog /mnt/f/reasonix/OpenROAD-flow-scripts/flow/designs/src/aes/aes_rcon.v
+read_verilog /mnt/f/reasonix/OpenROAD-flow-scripts/flow/designs/src/aes/aes_sbox.v
+read_verilog /mnt/f/reasonix/OpenROAD-flow-scripts/flow/designs/src/aes/aes_key_expand_128.v
+read_verilog /mnt/f/reasonix/OpenROAD-flow-scripts/flow/designs/src/aes/aes_cipher_top.v
+
+synth -top aes_cipher_top -flatten -noabc
+techmap -map /mnt/f/reasonix/mux2simple.v
+opt
+dfflibmap -liberty /mnt/f/reasonix/OpenROAD-flow-scripts/flow/platforms/asap7/lib/asap7sc7p5t_SEQ_RVT_TT_nldm_201020.lib
+opt
+clean -purge
+
+write_verilog -noattr -noexpr /mnt/f/reasonix/3d_partitioned/aes/aes_flat.v
+stat
